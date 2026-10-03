@@ -1,5 +1,7 @@
 node_modules/
+# 生成的卡片默认不入库，但 docs/ 里作为示例的图要进（README 引用了它们）
 *.png
 *.svg
+!docs/*.png
 !docs/*.svg
 .DS_Store

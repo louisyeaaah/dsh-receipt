@@ -2,6 +2,10 @@
 
 **一次会话，一张战报。** 数字全部来自会话日志，默认脱敏，可以在 X 上直接发。
 
+<img src="docs/session-card.png" alt="单次会话的战报卡片：时长、轮次、步数、工具调用、涉及文件、tokens、最常用工具" width="420"> <img src="docs/period-card.png" alt="周期战报卡片：最近 7 天所有会话的汇总" width="420">
+
+<sub>左：单次会话 · 右：最近 7 天汇总（都是真实输出，见 [docs/README.md](docs/README.md)）</sub>
+
 ```sh
 npx github:louisyeaaah/dsh-receipt              # 最新一次会话，打印文本战报
 npx github:louisyeaaah/dsh-receipt --png receipt.png   # 出一张 1080×1350 的卡片

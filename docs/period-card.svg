@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+<rect width="1080" height="1350" fill="#0b0e14"/>
+<rect x="42" y="42" width="996" height="1266" rx="28" fill="#12161f" stroke="#232a38"/>
+<text x="84" y="110" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="28" letter-spacing="8" fill="#ff7a45">最近 7d 战报</text>
+<text x="84" y="186" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="70" font-weight="700" fill="#f2f4f8">254 小时 1 分</text>
+<text x="84" y="234" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="26" fill="#8b93a7">55 个会话   ·   1 个项目   ·   2026-09-27 → 2026-10-03   ·   模型: deepseek-flash</text>
+<line x1="84" y1="274" x2="996" y2="274" stroke="#232a38" stroke-width="2"/>
+<text x="84" y="320" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="30" fill="#8b93a7">会话时长合计（含挂机，会重复计算）</text>
+<text x="996" y="320" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" text-anchor="end" fill="#f2f4f8">254 小时 1 分</text>
+<text x="84" y="382" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="30" fill="#8b93a7">轮次</text>
+<text x="996" y="382" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" text-anchor="end" fill="#f2f4f8">192</text>
+<text x="84" y="444" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="30" fill="#8b93a7">步数</text>
+<text x="996" y="444" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" text-anchor="end" fill="#f2f4f8">5,684</text>
+<text x="84" y="506" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="30" fill="#8b93a7">工具调用</text>
+<text x="996" y="506" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" text-anchor="end" fill="#f2f4f8">6,678</text>
+<text x="84" y="568" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="30" fill="#8b93a7">涉及文件</text>
+<text x="996" y="568" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" text-anchor="end" fill="#f2f4f8">391</text>
+<text x="84" y="630" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="30" fill="#8b93a7">消息</text>
+<text x="996" y="630" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="600" text-anchor="end" fill="#f2f4f8">5,682 / 833</text>
+<line x1="84" y1="692" x2="996" y2="692" stroke="#232a38" stroke-width="2"/>
+<text x="84" y="738" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="26" letter-spacing="3" fill="#8b93a7">TOKENS</text>
+<text x="106" y="784" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">输入（新）</text>
+<text x="996" y="784" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="29" font-weight="600" text-anchor="end" fill="#f2f4f8">12,490,796</text>
+<text x="106" y="830" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">输出</text>
+<text x="996" y="830" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="29" font-weight="600" text-anchor="end" fill="#f2f4f8">5,077,808</text>
+<text x="106" y="876" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">缓存读</text>
+<text x="996" y="876" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="29" font-weight="600" text-anchor="end" fill="#f2f4f8">1,566,391,680</text>
+<line x1="84" y1="922" x2="996" y2="922" stroke="#232a38" stroke-width="2"/>
+<text x="84" y="968" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="26" letter-spacing="3" fill="#8b93a7">用得最多的工具</text>
+<text x="106" y="1014" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">bash</text>
+<text x="996" y="1014" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="600" text-anchor="end" fill="#f2f4f8">4,176</text>
+<text x="106" y="1056" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">read</text>
+<text x="996" y="1056" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="600" text-anchor="end" fill="#f2f4f8">586</text>
+<text x="106" y="1098" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">edit</text>
+<text x="996" y="1098" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="600" text-anchor="end" fill="#f2f4f8">497</text>
+<text x="106" y="1140" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">write</text>
+<text x="996" y="1140" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="600" text-anchor="end" fill="#f2f4f8">323</text>
+<text x="106" y="1182" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" fill="#8b93a7">web_fetch</text>
+<text x="996" y="1182" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="27" font-weight="600" text-anchor="end" fill="#f2f4f8">238</text>
+<text x="84" y="1296" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif" font-size="22" fill="#8b93a7">由 dsh-receipt 生成 · 数字取自会话日志 · 默认脱敏</text>
+</svg>
