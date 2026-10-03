@@ -25,6 +25,7 @@
     "node": ">=22.0.0"
   },
   "keywords": [
+    "dsh-plugin",
     "deepseek-harness",
     "dsh",
     "build-in-public",
