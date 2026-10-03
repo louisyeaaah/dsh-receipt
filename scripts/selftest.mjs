@@ -16,6 +16,7 @@ import zlib from 'node:zlib';
 import { decompressZstd, listSessions, readCwd, readEvents, resolveSession } from '../src/session.mjs';
 import { compactNumber, formatDuration, redactProject, renderSvg, renderText, shortId } from '../src/render.mjs';
 import { computeStats, estimateCost } from '../src/stats.mjs';
+import { aggregate, parseSince, withinWindow } from '../src/aggregate.mjs';
 
 let passed = 0;
 const failures = [];
@@ -146,6 +147,62 @@ const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'receipt-selftest-'));
 
   const escaped = renderSvg(computeStats([], { sessionId: '<script>', project: 'a&b' }));
   check('SVG 文本做了转义', escaped.includes('&lt;script&gt;') && escaped.includes('a&amp;b'));
+}
+
+
+// ---------------------------------------------------------------- 周期聚合
+
+{
+  const now = new Date('2026-10-03T00:00:00Z').getTime();
+  check('--since 7d 解析', parseSince('7d', now) === now - 7 * 86400000);
+  check('--since 24h 解析', parseSince('24h', now) === now - 24 * 3600000);
+  check('--since 30m 解析', parseSince('30m', now) === now - 30 * 60000);
+  check('--since ISO 解析', parseSince('2026-10-01', now) === new Date('2026-10-01').getTime());
+  check('--since 空值返回 null（不设窗口）', parseSince(undefined, now) === null);
+  let threw = false;
+  try {
+    parseSince('下周', now);
+  } catch {
+    threw = true;
+  }
+  check('--since 看不懂就报错', threw);
+
+  const inWindow = { lastAt: new Date(now - 3600000).toISOString() };
+  const outWindow = { lastAt: new Date(now - 8 * 86400000).toISOString() };
+  check('窗口判断：在内', withinWindow(inWindow, now - 86400000) === true);
+  check('窗口判断：在外', withinWindow(outWindow, now - 86400000) === false);
+  check('无窗口时全要', withinWindow(outWindow, null) === true);
+
+  const a = computeStats([
+    { type: 'turn/start', time: 1000, data: { turn: 1 } },
+    { type: 'tool/call', time: 1100, data: { name: 'bash', arguments: '{}' } },
+    { type: 'tool/call', time: 1200, data: { name: 'write', arguments: '{"file_path":"/x/a.md"}' } },
+    { type: 'assistant/message', time: 1300, data: { usage: { inputTokens: 100, outputTokens: 10 } } },
+  ], { sessionId: 's1', project: '/p/alpha' });
+  const b = computeStats([
+    { type: 'turn/start', time: 5000, data: { turn: 1 } },
+    { type: 'tool/call', time: 5100, data: { name: 'bash', arguments: '{}' } },
+    { type: 'tool/call', time: 5200, data: { name: 'write', arguments: '{"file_path":"/y/a.md"}' } },
+    { type: 'assistant/message', time: 5300, data: { usage: { inputTokens: 200, outputTokens: 20 } } },
+  ], { sessionId: 's2', project: '/p/beta' });
+
+  const agg = aggregate([a, b]);
+  check('聚合：会话数', agg.sessionCount === 2);
+  check('聚合：项目去重', agg.projectCount === 2 && agg.projects.length === 2);
+  check('聚合：轮次相加', agg.turns === 2);
+  check('聚合：工具按名合并', agg.tools.find((t) => t.name === 'bash')?.count === 2);
+  check('聚合：文件名并集去重（同名的 a.md 只算一次）', agg.filesTouched === 1, JSON.stringify(agg.files));
+  check('聚合：tokens 相加', agg.tokens.input === 300 && agg.tokens.output === 30);
+  check('聚合：时间跨度是首尾差，不是时长之和', agg.spanMs === 4300, String(agg.spanMs));
+  check('聚合：时长合计单独保留', agg.durationMs === 300 + 300, String(agg.durationMs));
+  check('聚合：空列表不炸', aggregate([]).sessionCount === 0);
+
+  const text = renderText(agg, { lang: 'zh' });
+  check('周期战报标题正确', text.startsWith('最近') || text.includes('周期战报'), text.split('\n')[0]);
+  check('周期战报标明口径（含挂机/重复计算）', text.includes('重复计算'));
+  const svg = renderSvg(agg, { lang: 'zh' });
+  check('周期卡片是合法 SVG', svg.startsWith('<svg') && svg.includes('个会话'));
+  check('周期卡片不含绝对路径', !svg.includes('/p/'));
 }
 
 // ---------------------------------------------------------------- 结果

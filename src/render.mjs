@@ -47,6 +47,8 @@ export function compactNumber(value, lang = 'zh') {
 const LABELS = {
   zh: {
     title: '会话战报',
+    periodTitle: '周期战报',
+    sessions: '会话数', projects: '项目数', span: '时间跨度', sessionTotal: '会话时长合计（含挂机，会重复计算）',
     session: '会话', project: '项目', model: '模型', duration: '时长',
     turns: '轮次', steps: '步数', messages: '消息', userMsgs: '我的输入',
     toolCalls: '工具调用', files: '涉及文件', tokens: 'tokens', input: '输入（新）',
@@ -56,6 +58,8 @@ const LABELS = {
   },
   en: {
     title: 'SESSION RECEIPT',
+    periodTitle: 'PERIOD RECEIPT',
+    sessions: 'sessions', projects: 'projects', span: 'time span', sessionTotal: 'session time (sum, counts idle + overlaps)',
     session: 'session', project: 'project', model: 'model', duration: 'duration',
     turns: 'turns', steps: 'steps', messages: 'messages', userMsgs: 'my prompts',
     toolCalls: 'tool calls', files: 'files touched', tokens: 'tokens', input: 'input (fresh)',
@@ -66,13 +70,20 @@ const LABELS = {
 };
 
 /** 文本战报。 */
-export function renderText(stats, { lang = 'zh', cost = null, showPaths = false } = {}) {
+export function renderText(stats, { lang = 'zh', cost = null, showPaths = false, title = null } = {}) {
   const label = LABELS[lang] ?? LABELS.zh;
   const lines = [];
-  lines.push(`${label.title}   ${shortId(stats.sessionId)}`);
-  lines.push(`  ${label.project}   ${showPaths ? (stats.project ?? '—') : redactProject(stats.project)}`);
+  const isAggregate = Number(stats.sessionCount ?? 0) > 1;
+  lines.push(`${title ?? (isAggregate ? label.periodTitle : label.title)}${isAggregate ? '' : `   ${shortId(stats.sessionId)}`}`);
+  if (isAggregate) {
+    lines.push(`  ${label.sessions}  ${stats.sessionCount}    ${label.projects}  ${stats.projectCount}`.replace('会话数', '会话数'));
+    void 0;
+    lines.push(`  ${label.span}      ${formatDuration(stats.spanMinutes)}（${stats.firstAt?.slice(0, 10)} → ${stats.lastAt?.slice(0, 10)}）`);
+    lines.push(`  ${label.sessionTotal}  ${formatDuration(stats.durationMinutes)}`);
+  }
+  if (!isAggregate) lines.push(`  ${label.project}   ${showPaths ? (stats.project ?? '—') : redactProject(stats.project)}`);
   if (stats.models.length > 0) lines.push(`  ${label.model}     ${stats.models.join(', ')}`);
-  lines.push(`  ${label.duration}  ${formatDuration(stats.durationMinutes)}${stats.firstAt ? `（${stats.firstAt.slice(0, 16).replace('T', ' ')} 起）` : ''}`);
+  if (!isAggregate) lines.push(`  ${label.duration}  ${formatDuration(stats.durationMinutes)}${stats.firstAt ? `（${stats.firstAt.slice(0, 16).replace('T', ' ')} 起）` : ''}`);
   lines.push('');
   lines.push(`  ${label.turns}      ${stats.turns}`);
   lines.push(`  ${label.steps}      ${stats.steps}`);
@@ -112,8 +123,9 @@ function escapeXml(text) {
  * 可发布的卡片（SVG，1080×1350，适合直接发 X）。
  * 不用 canvas/图片依赖：纯文本 SVG，任何浏览器都能渲染，也能再转 PNG。
  */
-export function renderSvg(stats, { lang = 'zh', cost = null, theme = 'dark' } = {}) {
+export function renderSvg(stats, { lang = 'zh', cost = null, theme = 'dark', title = null } = {}) {
   const label = LABELS[lang] ?? LABELS.zh;
+  const isAggregate = Number(stats.sessionCount ?? 0) > 1;
   const width = 1080;
   const height = 1350;
   const pad = 84;
@@ -126,13 +138,13 @@ export function renderSvg(stats, { lang = 'zh', cost = null, theme = 'dark' } = 
   const footerY = height - pad / 2 - 52;
   const bottomLimit = footerY - 46;
 
-  const summaryRows = [
+  const summaryRows = (isAggregate ? [[label.sessionTotal, formatDuration(stats.durationMinutes)]] : []).concat([
     [label.turns, formatNumber(stats.turns)],
     [label.steps, formatNumber(stats.steps)],
     [label.toolCalls, formatNumber(stats.toolCalls)],
     [label.files, formatNumber(stats.filesTouched)],
     [label.messages, `${formatNumber(stats.assistantMessages)} / ${stats.userMessages}`],
-  ];
+  ]);
   const tokenRows = [
     [label.input, formatNumber(stats.tokens.input)],
     [label.output, formatNumber(stats.tokens.output)],
@@ -167,15 +179,20 @@ export function renderSvg(stats, { lang = 'zh', cost = null, theme = 'dark' } = 
 
   let y = pad + 26;
   // 头部：标题 + 大数字（时长）
-  parts.push(`<text x="${pad}" y="${y}" font-family="${FONT}" font-size="28" letter-spacing="8" fill="${palette.accent}">${escapeXml(label.title)}</text>`);
+  parts.push(`<text x="${pad}" y="${y}" font-family="${FONT}" font-size="28" letter-spacing="8" fill="${palette.accent}">${escapeXml(title ?? (isAggregate ? label.periodTitle : label.title))}</text>`);
   y += 76;
   parts.push(`<text x="${pad}" y="${y}" font-family="${FONT}" font-size="70" font-weight="700" fill="${palette.text}">${escapeXml(formatDuration(stats.durationMinutes))}</text>`);
   y += 48;
-  const sub = [
-    `${label.project}: ${redactProject(stats.project)}`,
-    stats.models.length > 0 ? `${label.model}: ${stats.models[0]}` : null,
-    `${label.session}: ${shortId(stats.sessionId)}`,
-  ].filter(Boolean).join('   ·   ');
+  const sub = (isAggregate
+    ? [
+        lang === 'zh' ? `${stats.sessionCount} 个会话` : `${stats.sessionCount} sessions`,
+        lang === 'zh' ? `${stats.projectCount} 个项目` : `${stats.projectCount} projects`,
+        stats.firstAt !== null ? `${stats.firstAt.slice(0, 10)} → ${stats.lastAt.slice(0, 10)}` : null,
+      ]
+    : [
+        `${label.project}: ${redactProject(stats.project)}`,
+        `${label.session}: ${shortId(stats.sessionId)}`,
+      ]).concat(stats.models.length > 0 ? [`${label.model}: ${stats.models[0]}`] : []).filter(Boolean).join('   ·   ');
   parts.push(`<text x="${pad}" y="${y}" font-family="${FONT}" font-size="26" fill="${palette.dim}">${escapeXml(sub)}</text>`);
   y += 40;
   divider();

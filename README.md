@@ -41,6 +41,35 @@ npx github:louisyeaaah/dsh-receipt --list              # 列出最近的会话
 
 （上面是真实输出，不是示意图。）
 
+## 周期战报：把一段时间的所有会话合成一张
+
+```sh
+npx github:louisyeaaah/dsh-receipt --since 7d          # 最近 7 天
+npx github:louisyeaaah/dsh-receipt --since 30d --project dsh-plugin
+npx github:louisyeaaah/dsh-receipt --since 7d --png week.png
+```
+
+```
+最近 7d 战报
+  会话数  55    项目数  1
+  时间跨度      143 小时 43 分（2026-09-27 → 2026-10-03）
+  会话时长合计（含挂机，会重复计算）  253 小时 34 分
+
+  轮次      186
+  步数      5,614
+  工具调用  6,609
+  涉及文件      389
+  tokens: 输入 12,460,512 · 输出 5,028,237 · 缓存读 1,543,818,240
+
+  用得最多的工具：bash 4,129 · read 581 · edit 487 · write 322 · web_fetch 238
+```
+
+**口径上诚实的两点**（都写进了输出本身）：
+
+- **时长合计 > 时间跨度是正常的**：每个会话的时长是「首尾事件之差」，包含挂机时间，
+  多个会话并行时会重复计算。所以两个数都给：**时间跨度**（真实墙上时间）和**时长合计**。
+- **涉及文件是并集去重**：跨会话同名文件只算一次。
+
 ## 为什么做这个
 
 build in public 的人要发「今天干了什么」，现在只有两条路：手截一张丑图，或者写一段没有信源的形容词。
@@ -94,6 +123,8 @@ dsh-receipt --price-in 2 --price-out 8 --price-cache 0.2   # 每百万 token 的
 | 命令 | 作用 |
 | --- | --- |
 | `dsh-receipt [会话id前缀]` | 文本战报（默认取最新会话） |
+| `--since 7d\|24h\|2026-10-01` | **周期战报**：窗口内所有会话合成一份 |
+| `--project <名字>` | 只统计某个项目（配合 `--since`） |
 | `--list` | 列出最近 20 个会话 |
 | `--svg out.svg` | 输出卡片（SVG，1080×1350） |
 | `--png out.png` | 输出 PNG（用本机 Chrome 把 SVG 转出来） |
