@@ -3,10 +3,14 @@
 **一次会话，一张战报。** 数字全部来自会话日志，默认脱敏，可以在 X 上直接发。
 
 ```sh
-npx dsh-receipt                       # 最新一次会话，打印文本战报
-dsh-receipt --png receipt.png         # 出一张 1080×1350 的卡片
-dsh-receipt --list                    # 列出最近的会话
+npx github:louisyeaaah/dsh-receipt              # 最新一次会话，打印文本战报
+npx github:louisyeaaah/dsh-receipt --png receipt.png   # 出一张 1080×1350 的卡片
+npx github:louisyeaaah/dsh-receipt --list              # 列出最近的会话
 ```
+
+> **别用 `npx dsh-receipt`**：npm 上已有的 `dsh-receipt` 是另一个人的包
+> （[deronendless/dsh-receipt](https://github.com/deronendless/dsh-receipt)，每轮结束写一份 JSON/Markdown 凭据，
+> 没有 `bin`），跑起来不是你想要的东西。这个仓库没发 npm，走 GitHub 路径。
 
 ```
 会话战报   f6832c10
@@ -100,6 +104,14 @@ dsh-receipt --price-in 2 --price-out 8 --price-cache 0.2   # 每百万 token 的
 | `--price-in/-out/-cache` | 给了才估成本 |
 
 自检：`bash scripts/verify.sh`（语法 + 包元信息 + 33 项离线单测）。
+
+## 和同名工具的区别
+
+npm 上的 [`dsh-receipt`](https://github.com/deronendless/dsh-receipt) 做的是**每轮结束自动落一份凭据文件**
+（JSON + Markdown，带 Git 状态、审批审计、SHA-256 完整性摘要，做得很细）。
+本工具做的是另一件事：**把整次会话汇总成一张给人看的卡片**，可以直接发出去。
+
+两者不冲突：那份适合审计留档，这张适合发布。要审计留档就用它的。
 
 ## 限制
 
