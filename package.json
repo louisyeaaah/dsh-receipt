@@ -4,12 +4,53 @@
   "private": false,
   "description": "Turn one DSH session into a shareable receipt: duration, turns, tool calls, files touched, tokens — read-only, redacted by default, zero dependencies.",
   "type": "module",
-  "bin": { "dsh-receipt": "bin/receipt.mjs" },
-  "exports": { ".": "./src/stats.mjs", "./package.json": "./package.json" },
-  "files": ["bin", "src", "README.md", "LICENSE", "CHANGELOG.md"],
-  "engines": { "node": ">=22.0.0" },
-  "keywords": ["deepseek-harness", "dsh", "build-in-public", "receipt", "cli", "zero-dependency"],
-  "repository": { "type": "git", "url": "git+https://github.com/louisyeaaah/dsh-receipt.git" },
+  "bin": {
+    "dsh-receipt": "bin/receipt.mjs"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./cli": "./bin/receipt.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "src",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "build-in-public",
+    "receipt",
+    "cli",
+    "zero-dependency"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/louisyeaaah/dsh-receipt.git"
+  },
   "license": "MIT",
-  "scripts": { "test": "node scripts/selftest.mjs", "verify": "bash scripts/verify.sh" }
+  "scripts": {
+    "test": "node scripts/selftest.mjs",
+    "verify": "bash scripts/verify.sh"
+  },
+  "main": "lib/index.js",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "manifestVersion": 1
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": ">=0.2.0-rc.1 <0.3.0-0",
+    "@deepseek-ai/dsh-commands": ">=0.2.0-rc.1 <0.3.0-0",
+    "@deepseek-ai/schemastery": "^3.18.1"
+  }
 }

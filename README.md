@@ -74,6 +74,27 @@ npx github:louisyeaaah/dsh-receipt --since 7d --png week.png
   多个会话并行时会重复计算。所以两个数都给：**时间跨度**（真实墙上时间）和**时长合计**。
 - **涉及文件是并集去重**：跨会话同名文件只算一次。
 
+## 作为 DSH 插件用（不只是命令行）
+
+装进 DSH 之后，会话里可以直接要战报，不用离开应用：
+
+```
+dsh_receipt()                                  当前会话
+dsh_receipt({ scope: 'period', since: '7d' })  最近 7 天汇总
+dsh_receipt({ out: '/tmp/card.svg' })          顺便把卡片写出来
+/dsh-receipt period 7d en out:/tmp/card.svg    人也可以直接敲
+```
+
+```sh
+dsh plugin --profile <profile> add github:louisyeaaah/dsh-receipt
+```
+
+插件层（`lib/`）和命令行层（`bin/`）**共享同一套统计与渲染代码**（`src/`），
+所以两条路的数字口径完全一致 —— 不会出现「命令行说 691 步、插件说 700 步」。
+
+- 插件只读会话日志；唯一的写操作是你显式给 `out` 时写出的那张卡片。
+- 官方 `@deepseek-ai/*` 包声明为 `peerDependencies`（由 DSH 提供），不重复打包。
+
 ## 为什么做这个
 
 build in public 的人要发「今天干了什么」，现在只有两条路：手截一张丑图，或者写一段没有信源的形容词。

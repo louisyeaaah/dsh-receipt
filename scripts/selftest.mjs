@@ -13,7 +13,7 @@ import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 
-import { decompressZstd, listSessions, readCwd, readEvents, resolveSession } from '../src/session.mjs';
+import { decompressZstd, listSessions, locateSession, readCwd, readEvents, resolveSession } from '../src/session.mjs';
 import { compactNumber, formatDuration, redactProject, renderSvg, renderText, shortId } from '../src/render.mjs';
 import { computeStats, estimateCost } from '../src/stats.mjs';
 import { aggregate, parseSince, withinWindow } from '../src/aggregate.mjs';
@@ -203,6 +203,35 @@ const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'receipt-selftest-'));
   const svg = renderSvg(agg, { lang: 'zh' });
   check('周期卡片是合法 SVG', svg.startsWith('<svg') && svg.includes('个会话'));
   check('周期卡片不含绝对路径', !svg.includes('/p/'));
+}
+
+
+// ---------------------------------------------------------------- 插件层
+
+{
+  // 造两个会话：不同项目目录，验证按 cwd 命中并且取最新
+  const root = path.join(TMP, 'locate-sessions');
+  const mk = (project, id, time) => {
+    const dir = path.join(root, `--${project.replace(/\//g, '-')}--`, `session-${id}`);
+    fs.mkdirSync(dir, { recursive: true });
+    const lines = [`{"type":"session","cwd":"${project}"}\n`, `{"type":"tool/call","time":${time},"data":{"name":"bash","arguments":"{}"}}\n`];
+    fs.writeFileSync(path.join(dir, 'session.v4.jsonl.zstd'), Buffer.concat(lines.map((line) => zlib.zstdCompressSync(Buffer.from(line)))));
+    fs.utimesSync(path.join(dir, 'session.v4.jsonl.zstd'), new Date(time), new Date(time));
+  };
+  mk('/p/alpha', 'aaaaaaaa-1111', 1_700_000_000_000);
+  mk('/p/beta', 'bbbbbbbb-2222', 1_700_000_100_000);
+
+  const hit = locateSession('/p/alpha', { root });
+  check('locateSession 按 cwd 选对项目', hit.project === '/p/alpha', hit.project);
+  const fallback = locateSession('/p/gamma', { root });
+  check('cwd 没有匹配时回退到最新的会话', fallback.project === '/p/beta', fallback.project);
+  let threw = false;
+  try {
+    locateSession('/p/alpha', { root: path.join(TMP, 'empty-root') });
+  } catch {
+    threw = true;
+  }
+  check('一个会话都没有时明确报错', threw);
 }
 
 // ---------------------------------------------------------------- 结果

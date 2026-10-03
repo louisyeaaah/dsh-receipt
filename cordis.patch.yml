@@ -1,0 +1,10 @@
+# dsh-receipt bundle patch
+#
+# 注册一行：把 dsh_receipt 工具和 /dsh-receipt 命令挂进 DSH。
+# 命令行版（bin/receipt.mjs）不受影响，两种用法共享同一套统计与渲染代码。
+- insert:
+    - id: tool-receipt
+      name: 'dsh-receipt'
+      config:
+        # 战报默认语言。命令行版可以用 --lang 覆盖，插件里可以用工具参数覆盖。
+        lang: zh

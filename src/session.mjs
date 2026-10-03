@@ -143,3 +143,16 @@ export function readEvents(file) {
   }
   return events;
 }
+
+/**
+ * 找到「当前这个会话」的文件。
+ *
+ * 顺序：先按 cwd 匹配（会话自带的 cwd 字段最准），没有匹配就回退到最近活动的会话。
+ * 放在 src/ 而不是插件入口里，是为了能在没有 @deepseek-ai/* 依赖的情况下离线测试。
+ */
+export function locateSession(cwd, { root } = {}) {
+  const sessions = listSessions(root ?? SESSIONS_ROOT, { limit: 200 });
+  if (sessions.length === 0) throw new Error(`在会话目录里没找到任何会话（cwd=${cwd}）`);
+  const sameProject = sessions.filter((item) => item.project === cwd);
+  return (sameProject.length > 0 ? sameProject : sessions)[0];
+}
