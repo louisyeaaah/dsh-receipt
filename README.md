@@ -176,3 +176,8 @@ npm 上的 [`dsh-receipt`](https://github.com/deronendless/dsh-receipt) 做的�
 - 卡片是 SVG 转的 PNG，依赖本机有 Chrome/Chromium/Edge；没有的话 SVG 也能直接发。
 
 MIT
+
+---
+
+作者 [@louisyeaah](https://x.com/louisyeaah)（悉尼）—— 发了什么、翻车了什么都会写。
+作品站：[louisyeaaah.github.io](https://louisyeaaah.github.io) · 全部工具：[github.com/louisyeaaah](https://github.com/louisyeaaah)
